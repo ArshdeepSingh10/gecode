@@ -1,0 +1,51 @@
+ function geocodeAddress() {
+     resultsMap = new google.maps.Map(document.getElementById('map'), {
+         zoom: 6,
+         center: { lat: -34.397, lng: 150.644 }
+     });
+
+     var geocoder = new google.maps.Geocoder();
+
+     debugger
+     var zipCode = $('#Zipcode').val();
+
+     geocoder.geocode({ 'address': zipCode }, function (results, status) {
+         if (status === 'OK') {
+              var location = results[0].geometry.location;
+             
+             var addressComponents = results[0].address_components;
+             var city, state, country, sublocality;
+
+             for (var i = 0; i < addressComponents.length; i++) {
+                 debugger
+                 var component = addressComponents[i];
+                 if (component.types.includes('locality')) {
+                     city = component.long_name;
+                 }
+                 if (component.types.includes('administrative_area_level_1')) {
+                     state = component.long_name;
+                 }
+                 if (component.types.includes('country')) {
+                     country = component.long_name;
+                 }
+                 if (component.types.includes('administrative_area_level_2')) {
+                     sublocality = component.long_name;
+                 }else{
+                     if (component.types.includes('sublocality')) {
+                         sublocality = component.long_name;
+                     }
+                 }
+                
+                 
+             }
+             var latitude = location.lat();
+             var longitude = location.lng();
+             $(".addressList").html(" ");
+             $(".addressList").show();
+
+             $(".addressList").append(`<p class="cursor-pointer border-bottom m-0 p-2"><span class="addZip">${zipCode}</span> <span class="addCountry">${country}</span> <span class="addState">${state}</span> <span class="addCity">${city== null ?" ":city}</span><span class="addCityArea"> ${sublocality == null ? " " : sublocality}</span> <span class="d-none latitude">${latitude}</span><span class="d-none longitude">${longitude}</span></p >`);
+         } else {
+             console.log('zipcode is invalid:');
+         }
+     });
+ }
